@@ -20,11 +20,11 @@ control.robot.connect(IP, PORT)
 
 joystick.start()
 control.start()
-camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=False, codec="JPEG")
+camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=True, codec="JPEG")
 camera.start()
 
-WIDTH, HEIGHT = 640, 360
-SENSIVITY = 108     # чувствительность автономки
+WIDTH, HEIGHT = 360, 180
+SENSIVITY = 80     # чувствительность автономки
 INTENSIVITY = 110   # порог интенсивности
 r = int(WIDTH * 1 / 6 + 0), int(HEIGHT * 2 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(HEIGHT * 3 / 5 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
 
@@ -34,14 +34,14 @@ while True:
         frame = camera.cvImage[r[1]:(r[1] + r[3]), r[0]:(r[0] + r[2])].copy()  # r - прямоугольник: x, y, width, height
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         intensivity = int(gray.mean())
-        if intensivity < INTENSIVITY:
-            ret, binary = cv2.threshold(gray, SENSIVITY, 255, cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
+        #if intensivity < INTENSIVITY:
+        #    ret, binary = cv2.threshold(gray, SENSIVITY, 255, cv2.THRESH_BINARY)  # если инверсная инвертируем картинку
             #print("Inverse")
-        else:
-            ret, binary = cv2.threshold(gray, SENSIVITY, 255,
+        #else:
+        ret, binary = cv2.threshold(gray, SENSIVITY, 255,
                                         cv2.THRESH_BINARY_INV)  # переводим в бинарное изображение
         # print(cv2.findContours(binary, 1, cv2.CHAIN_APPROX_NONE))
-        contours, hierarchy = cv2.findContours(binary, 1, cv2.CHAIN_APPROX_NONE)
+        _, contours, hierarchy = cv2.findContours(binary, 1, cv2.CHAIN_APPROX_NONE)
         if len(contours) > 0:  # если нашли контур
             c = max(contours, key=cv2.contourArea)  # ищем максимальный контур
             M = cv2.moments(c)  # получаем массив с координатами
@@ -62,11 +62,11 @@ while True:
                 decObj = decObj.data.decode("UTF-8")
                 if decObj != qrData:        # если прошлый прочитанный был такой же
                     qrData = decObj
-                    # print(qrData)
+                    print(qrData)
         except:
             pass
-        cv2.imshow("NONE", camera.cvImage)
-        #cv2.imshow("bin", binary)
+        cv2.imshow("NONE", frame)
+        cv2.imshow("bin", binary)
         #cv2.imshow("gray", gray)
         cv2.waitKey(1)
     time.sleep(0.03)

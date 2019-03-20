@@ -60,6 +60,7 @@ class Control(threading.Thread):
 
                     else:
                         self.robot.rotate(self._joystick.Axis.get(ROTATE_STICK))     # поворот на месте
+                    self.robot._sendPackage()
             except:
                 print("Ошибка управления")
 

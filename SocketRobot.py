@@ -59,21 +59,23 @@ class SocketRobot:
             self._argDict["turnFirstDOF"], self._argDict["turnSecondDOF"],
             self._argDict["turnThirdDOF"], self._argDict["turnFourthDOF"]
         ))
+#        print(self._argDict)
+
 
     def turnForward(self, scale):  # scale - значение из диапазона (-1, 1)
         # поворачиваем сервами в зависимости от значения со стика
         self._argDict["turnForwardArg"] = float(scale)
-        self._sendPackage()
+        #self._sendPackage()
 
     def move(self, scale):  # scale - значение из диапазона (-1, 1) # движемся вперед со скоростью
         # MotorSpeed*коэффициент scale
         self._argDict["moveArg"] = int(scale * self._motorSpeed)
-        self._sendPackage()
+        #self._sendPackage()
 
     def rotate(self, scale):  # scale - значение из диапазона (-1, 1) # поворачиваемся со скоростью моторов
         # MotorSpeed*коэффициент scale
         self._argDict["rotateArg"] = int(scale * self._motorSpeed)
-        self._sendPackage()
+        #self._sendPackage()
 
 #    def turnAll(self, scale):  # поворачивает всеми сервами на один и тот же угол
 #        self._argDict["turnAllArg"] = float(scale)
@@ -81,31 +83,31 @@ class SocketRobot:
 
     def setAuto(self, b):
         self._argDict["setAutoArg"] = bool(b)
-        self._sendPackage()
+        #self._sendPackage()
 
     def setCamera(self, scale):
         self._argDict["setCameraArg"] = float(scale)
-        self._sendPackage()
+        #self._sendPackage()
 
     def turnFirstDOF(self, scale):
         self.turnFirstDOFAngle += SPEED_FIRST_DOF * float(scale)
-        self._argDict["turnFirstDOF"] = self.turnFirstDOFAngle
-        self._sendPackage()
+        self._argDict["turnFirstDOF"] = float(self.turnFirstDOFAngle)
+        #self._sendPackage()
 
     def turnSecondDOF(self, scale):
         self.turnSecondDOFAngle += SPEED_SECOND_DOF * float(scale)
-        self._argDict["turnSecondDOF"] = self.turnSecondDOFAngle
-        self._sendPackage()
+        self._argDict["turnSecondDOF"] = float(self.turnSecondDOFAngle)
+        #self._sendPackage()
 
     def turnThirdDOF(self, scale):
         self.turnThirdDOFAngle += SPEED_THIRD_DOF * float(scale)
-        self._argDict["turnThirdDOF"] = self.turnThirdDOFAngle
-        self._sendPackage()
+        self._argDict["turnThirdDOF"] = float(self.turnThirdDOFAngle)
+        #self._sendPackage()
 
     def turnFourthDOF(self, scale):
         self.turnFourthDOFAngle += SPEED_FOURTH_DOF * float(scale)
-        self._argDict["turnFourthDOF"] = self.turnFourthDOFAngle
-        self._sendPackage()
+        self._argDict["turnFourthDOF"] = float(self.turnFourthDOFAngle)
+        #self._sendPackage()
 
     @property
     def online(self):  # создан ли клиент

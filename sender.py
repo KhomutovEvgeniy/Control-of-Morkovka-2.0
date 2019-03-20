@@ -31,6 +31,7 @@ class Sender(threading.Thread):
 
     def sendPackage(self, package):
         self._queue.put(package)
+#        print(package)
 
     def pack(self, *args):
         return struct.Struct(self._packageFormat).pack(*args)
