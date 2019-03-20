@@ -1,9 +1,21 @@
-""" Модуль описывающий управление роботом """
-import Robot
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+#import Robot
 import threading
 import time
 from config import *
 import SocketRobot
+
+HOME_POSITION_FIRST_DOF = 20
+HOME_POSITION_SECOND_DOF = -90
+HOME_POSITION_THIRD_DOF = 90
+HOME_POSITION_FOURTH_DOF = 45
+
+WORK_POSITION_FIRST_DOF = 20
+WORK_POSITION_SECOND_DOF = 70
+WORK_POSITION_THIRD_DOF = -25
+WORK_POSITION_FOURTH_DOF = 60
 
 
 class Control(threading.Thread):
@@ -13,6 +25,8 @@ class Control(threading.Thread):
         self._joystick = None
         self._auto = False
         self._cameraPos = False     # позиция камеры
+        self._manipulatorHome = False # Возврат манипулятора в домашнее положение
+        self._manipulatorWork = False # Установка манипулятора в предрабочее положение
         self._EXIT = False
 
 
@@ -71,10 +85,30 @@ class Control(threading.Thread):
                 self.robot.setCamera(int(self._cameraPos))  # True - 1, False - 0
 
 
+        def setManipulatorHome(w):
+            if w:
+                self._manipulatorHome = not self._manipulatorHome
+                self.robot._first_DOF = HOME_POSITION_FIRST_DOF
+                self.robot._second_DOF = HOME_POSITION_SECOND_DOF
+                self.robot._third_DOF = HOME_POSITION_THIRD_DOF
+#                self.robot._fourth_DOF = HOME_POSITION_FOURTH_DOF
+
+        def setManipulatorWork(w):
+            if w:
+                self._manipulatorWork = not self._manipulatorWork
+                self.robot._first_DOF = WORK_POSITION_FIRST_DOF
+                self.robot._second_DOF = WORK_POSITION_SECOND_DOF
+                self.robot._third_DOF = WORK_POSITION_THIRD_DOF
+                self.robot._fourth_DOF = WORK_POSITION_FOURTH_DOF
+
+
         self._joystick.connectButton(ADD_SPEED_BUTTON, addSpeed)
         self._joystick.connectButton(SUB_SPEED_BUTTON, subSpeed)
         self._joystick.connectButton(SET_AUTO_BUTTON, setAutoButton)
         self._joystick.connectButton(ROTATE_CAMERA_BUTTON, rotateCamera)
+        self._joystick.connectButton(SET_MANIPULATOR_HOME, setManipulatorHome)
+        self._joystick.connectButton(SET_MANIPULATOR_WORK, setManipulatorWork)
+
 
     def exit(self):
         self._EXIT = True

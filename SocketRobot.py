@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 import sender
 
 SPEED_FIRST_DOF = 3.0
