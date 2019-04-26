@@ -20,13 +20,19 @@ control.robot.connect(IP, PORT)
 
 joystick.start()
 control.start()
-camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=True, codec="JPEG")
+camera = GstCV.CVGstreamer(IP, 5000, 5001, 5005, toAVS=False, codec="JPEG")
 camera.start()
 
-WIDTH, HEIGHT = 360, 180
+#WIDTH, HEIGHT = 320, 240
+WIDTH, HEIGHT = 640, 480
+
+#Для автономных  полей
 SENSIVITY = 80     # чувствительность автономки
+# Для наклонной
+#SENSIVITY = 75
+
 INTENSIVITY = 110   # порог интенсивности
-r = int(WIDTH * 1 / 6 + 0), int(HEIGHT * 2 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(HEIGHT * 3 / 5 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
+r = int(WIDTH * 0.14 + 0), int(HEIGHT * 2 / 5 + 0), int(WIDTH * 4 / 6 + 0), int(HEIGHT * 10 / 10 + 0)  # прямоугольник, выделяемый в кадре для OpenCV: x, y, width, height
 
 qrData = ''
 while True:
@@ -52,8 +58,8 @@ while True:
                 cv2.line(frame, (0, cy), (r[2], cy), (255, 0, 0), 1)
                 cv2.drawContours(frame, contours, -1, (0, 255, 0), 1)  # рисуем контур
                 diff = cx / (r[2] / 2) - 1
-        else:  # если не нашли контур
-            print("I don't see the line")
+#       else:  # если не нашли контур
+#            print("I don't see the line")
         cv2.namedWindow("NONE", cv2.WND_PROP_FULLSCREEN)
         try:
             decObjects = pyzbar.decode(camera.cvImage)  # читаем куаркоды
@@ -65,9 +71,9 @@ while True:
                     print(qrData)
         except:
             pass
-        cv2.imshow("NONE", frame)
+        cv2.imshow("NONE", camera.cvImage)
         cv2.imshow("bin", binary)
-        #cv2.imshow("gray", gray)
+        cv2.imshow("contours", frame)
         cv2.waitKey(1)
     time.sleep(0.03)
 
